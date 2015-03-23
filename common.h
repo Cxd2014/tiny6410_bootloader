@@ -3,3 +3,7 @@
 
 void clock_init(void);
 
+void init_uart(void);
+unsigned char getc(void);
+void putc(char c);
+
