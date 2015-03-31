@@ -61,12 +61,12 @@ char * ___strtok;
  * @dest: Where to copy the string to
  * @src: Where to copy the string from
  */
+ 
 char * strcpy(char * dest,const char *src)
 {
 	char *tmp = dest;
 
-	while ((*dest++ = *src++) != '\0')
-		/* nothing */;
+	while ((*dest++ = *src++) != '\0');
 	return tmp;
 }
 #endif
@@ -218,12 +218,12 @@ char * strrchr(const char * s, int c)
  * strlen - Find the length of a string
  * @s: The string to be sized
  */
+ 
 size_t strlen(const char * s)
 {
 	const char *sc;
 
-	for (sc = s; *sc != '\0'; ++sc)
-		/* nothing */;
+	for (sc = s; *sc != '\0'; ++sc);
 	return sc - s;
 }
 #endif

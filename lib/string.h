@@ -22,6 +22,7 @@ extern size_t strspn(const char *,const char *);
 #ifndef __HAVE_ARCH_STRCPY
 extern char * strcpy(char *,const char *);
 #endif
+
 #ifndef __HAVE_ARCH_STRNCPY
 extern char * strncpy(char *,const char *, size_t);
 #endif
@@ -49,9 +50,11 @@ extern char * strrchr(const char *,int);
 #ifndef __HAVE_ARCH_STRSTR
 extern char * strstr(const char *,const char *);
 #endif
+
 #ifndef __HAVE_ARCH_STRLEN
 extern size_t strlen(const char *);
 #endif
+
 #ifndef __HAVE_ARCH_STRNLEN
 extern size_t strnlen(const char *,size_t);
 #endif

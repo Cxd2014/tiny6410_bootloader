@@ -5,7 +5,8 @@
 #define NFDATA          (*((volatile unsigned char *)0x70200010))
 #define NFSTAT          (*((volatile unsigned long *)0x70200028))
 
-#define PAGESIZE (8*1024)   // K9GAG08U0E Flash 1Page = (8K + 436)Bytes
+//#define PAGESIZE (8*1024)   // K9GAG08U0E Flash 1Page = (8K + 436)Bytes
+#define PAGESIZE 2048               // K9K8G08U0A Flash 1Page = (8K + 64)Bytes
 
 #define NAND_ENABLE_SELECT()	(NFCONT &= ~(1 << 1))
 #define NAND_DISABLE_SELECT()	(NFCONT |= (1 << 1))
@@ -36,7 +37,26 @@ static void nand_reset(void)
 	NAND_DISABLE_SELECT();
 }
 
+/*
+void nand_send_addr(unsigned int addr)
+{		
+	unsigned int page   = addr / PAGESIZE;
+	unsigned int colunm = addr % PAGESIZE;
+	// 这两个地址表示从页内哪里开始 
+	NFADDR = (colunm & 0xff);
+	nand_wait_ready();
+	NFADDR = ((colunm >> 8) & 0x3f);
+	nand_wait_ready();
+	// 下面三个地址表示哪一页 
+	NFADDR = (page & 0xff);
+	nand_wait_ready();
+	NFADDR = ((page >> 8) & 0xff);
+	nand_wait_ready();
+	NFADDR = ((page >> 16) & 0xf);
+	nand_wait_ready();
 
+}
+*/
 void nand_send_addr(unsigned int addr)
 {		
 	unsigned int page   = addr / PAGESIZE;
@@ -44,14 +64,14 @@ void nand_send_addr(unsigned int addr)
 	/* 这两个地址表示从页内哪里开始 */
 	NFADDR = (colunm & 0xff);
 	nand_wait_ready();
-	NFADDR = ((colunm >> 8) & 0xff);
+	NFADDR = ((colunm >> 8) & 0xf);
 	nand_wait_ready();
 	/* 下面三个地址表示哪一页 */
 	NFADDR = (page & 0xff);
 	nand_wait_ready();
 	NFADDR = ((page >> 8) & 0xff);
 	nand_wait_ready();
-	NFADDR = ((page >> 16) & 0xff);
+	NFADDR = ((page >> 16) & 0x7);
 	nand_wait_ready();
 
 }
@@ -65,7 +85,7 @@ void nand_init(void)
 	NFCONF &= ~((1<<30) | (7<<12) | (7<<8) | (7<<4)); // clear 0 first
 	NFCONF |= ( (TACLS<<12)|(TWRPH0<<8)|(TWRPH1<<4) ); //set valve second
 	/* 使能nand flash controller */
-	NFCONT |= (1<<0); 
+	NFCONT |= (3<<0); 
 	
 	nand_reset();//nand reset
 }
@@ -109,8 +129,42 @@ void nand_read_page(unsigned int nand_start, unsigned int ddr_start, unsigned in
 	NAND_DISABLE_SELECT();
 }
 
+/*
+void nand_read_id(unsigned char *buf)
+{
+	int i;
+	
+	NAND_ENABLE_SELECT();
 
+	nand_send_cmd(0x90);
 
+	nand_send_addr(0x0);
+
+	for (i = 0;i<100;i++); 
+
+	for (i=0;i<6;i++)	
+		*(buf+i) = NFDATA;
+
+	NAND_DISABLE_SELECT();	
+}
+*/
+void nand_read_id(unsigned char *buf)
+{
+	int i;
+	
+	NAND_ENABLE_SELECT();
+
+	nand_send_cmd(0x90);
+
+	nand_send_addr(0x0);
+
+	for (i = 0;i<100;i++); 
+
+	for (i=0;i<5;i++)	
+		*(buf+i) = NFDATA;
+
+	NAND_DISABLE_SELECT();	
+}
 
 
 

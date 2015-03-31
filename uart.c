@@ -17,7 +17,7 @@ void init_uart(void)
 	GPACON |= 0x22;
 
 	ULCON0 = 0x3;  					
-	UCON0  = 0x5;  					
+	UCON0  = 0x5; //uboot 					
 	UFCON0 = 0x01; 					
 	UMCON0 = 0;	
 
@@ -33,11 +33,41 @@ unsigned char getc(void)
 }
 
 
-void putc(char c)
+void putc(unsigned char c)
 {
 	while (UFSTAT0 & (1<<14));
 	UTXH0 = c;
 }
 
+int get_char(void)
+{
+	char c;
+	
+	c = getc();
+	
+	if (c == '\r')//the key of enter
+		return '\n';
+	
+	return c;
+}
 
+/*
+char gets(char *s)
+{
+	char *p = s;
+	while((*p = get_char()) != '\n')
+	{
+		if(*p != '\b')//the key of Backspace
+			putc(*p++);
+		else if(p>s)
+		{
+			putc('\b');
+			p--;
+		}		
+	}
+	*p = '\0';//the key of space
+	putc('\r');
+	return s;
+}
+*/
 

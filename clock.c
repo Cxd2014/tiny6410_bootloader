@@ -16,6 +16,11 @@
 #define MPLL_CON  (*((volatile unsigned long *)0x7E00F010))
 #define MPLL_CON_VAL  ((1<<31) | (266 << 16) | (3 << 8) | (1))
 
+
+#define EPLL_CON0  (*((volatile unsigned long *)0x7E00F014))
+#define EPLL_CON1  (*((volatile unsigned long *)0x7E00F018))
+//#define EPLL_CON_VAL  ((1<<31) | (32 << 16) | (1 << 8) | (1<<1))
+
 #define CLK_SRC  (*((volatile unsigned long *)0x7E00F01C))
 
 void clock_init(void)
@@ -24,15 +29,22 @@ void clock_init(void)
 	MPLL_LOCK = 0xffff;
 	EPLL_LOCK = 0xffff;
 
-	OTHERS &= ~0xc0;
+	OTHERS &= ~0xc0;//set async mode
 	while ((OTHERS & 0xf00) != 0);
 
 	CLK_DIV0 = (ARM_RATIO) | (MPLL_RATIO << 4) | (HCLK_RATIO << 8) | (HCLKX2_RATIO << 9) | (PCLK_RATIO << 12);
 
-	APLL_CON = APLL_CON_VAL;  
-	MPLL_CON = MPLL_CON_VAL; 
+	APLL_CON = APLL_CON_VAL;   //533MH
+	MPLL_CON = MPLL_CON_VAL; //533MH
+	
+	EPLL_CON0 = 0x80200203 ; //24MH
+	EPLL_CON1 = 0;
 
-	CLK_SRC = 0x03;
+	CLK_SRC = 0x2007;//select the clock source
+
+	//wait at least 200us to stablize all clock 
+	int i = 0x10000;
+	while(i--);
 }
 
 

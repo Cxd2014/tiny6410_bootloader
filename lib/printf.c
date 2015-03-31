@@ -43,7 +43,7 @@ int scanf(const char * fmt, ...)
 	while(1)
 	{
 		c = getc();
-		
+		putc(c);
 		if((c == 0x0d) || (c == 0x0a))
 		{
 		
@@ -60,7 +60,6 @@ int scanf(const char * fmt, ...)
 	va_start(args,fmt);
 	i = vsscanf(g_pcInBuf,fmt,args);
 	va_end(args);
-	printf("c = %d",c);
 	return i;
 }
 
