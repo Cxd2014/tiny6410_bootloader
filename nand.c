@@ -1,3 +1,5 @@
+#include"nand.h"
+
 #define NFCONF          (*((volatile unsigned long *)0x70200000))
 #define NFCONT          (*((volatile unsigned long *)0x70200004))
 #define NFCMMD          (*((volatile unsigned long *)0x70200008))
@@ -37,26 +39,7 @@ static void nand_reset(void)
 	NAND_DISABLE_SELECT();
 }
 
-/*
-void nand_send_addr(unsigned int addr)
-{		
-	unsigned int page   = addr / PAGESIZE;
-	unsigned int colunm = addr % PAGESIZE;
-	// 这两个地址表示从页内哪里开始 
-	NFADDR = (colunm & 0xff);
-	nand_wait_ready();
-	NFADDR = ((colunm >> 8) & 0x3f);
-	nand_wait_ready();
-	// 下面三个地址表示哪一页 
-	NFADDR = (page & 0xff);
-	nand_wait_ready();
-	NFADDR = ((page >> 8) & 0xff);
-	nand_wait_ready();
-	NFADDR = ((page >> 16) & 0xf);
-	nand_wait_ready();
 
-}
-*/
 void nand_send_addr(unsigned int addr)
 {		
 	unsigned int page   = addr / PAGESIZE;
@@ -129,8 +112,72 @@ void nand_read_page(unsigned int nand_start, unsigned int ddr_start, unsigned in
 	NAND_DISABLE_SELECT();
 }
 
-/*
+
 void nand_read_id(unsigned char *buf)
+{
+	int i;
+	
+	NAND_ENABLE_SELECT();
+
+	nand_send_cmd(0x90);
+
+	nand_send_addr(0x0);
+
+	//for (i = 0;i<100;i++); 
+
+	for (i=0;i<5;i++)	
+		*(buf+i) = NFDATA;
+
+	NAND_DISABLE_SELECT();	
+}
+
+
+/*
+//for 2G NandFlash
+int nand_boot_copy_to_ddr(unsigned int nand_start, unsigned int ddr_start, unsigned int len)
+{
+	
+	//S3C6410启动时拷贝的8K代码不是存储在Nand flash的第一页上，
+	//而是存储在Nand flash的前4页上，每页2K，总共8K，
+	//这是S3C6410芯片的硬件结构决定的！所以启动代码要单独复制到DRAN中去
+	 
+
+	unsigned char *buf = (unsigned char *)ddr_start;
+	int col ;//colunm
+	int i = 0;
+	len = len/2048+1; //page 
+
+	NAND_ENABLE_SELECT();
+	
+	while (i < len)
+	{
+		
+		nand_send_cmd(0x00);
+
+		nand_send_addr(nand_start);
+		
+		nand_send_cmd(0x30);
+
+	
+		nand_wait_ready();
+
+	
+		for (col = 0; col < 2048; col++)
+		{
+			buf[col] =  NFDATA;	
+		}
+		buf = buf+2048;
+		nand_start = nand_start + PAGESIZE;
+		i++;//page ++	
+	}		
+	NAND_DISABLE_SELECT();
+	return 0;
+}
+*/
+
+
+/*
+void nand_read_id(unsigned char *buf)//for 2G NandFlash
 {
 	int i;
 	
@@ -148,74 +195,27 @@ void nand_read_id(unsigned char *buf)
 	NAND_DISABLE_SELECT();	
 }
 */
-void nand_read_id(unsigned char *buf)
-{
-	int i;
-	
-	NAND_ENABLE_SELECT();
 
-	nand_send_cmd(0x90);
+/*
+void nand_send_addr(unsigned int addr)//for 2G NandFlash
+{		
+	unsigned int page   = addr / PAGESIZE;
+	unsigned int colunm = addr % PAGESIZE;
+	// 这两个地址表示从页内哪里开始 
+	NFADDR = (colunm & 0xff);
+	nand_wait_ready();
+	NFADDR = ((colunm >> 8) & 0x3f);
+	nand_wait_ready();
+	// 下面三个地址表示哪一页 
+	NFADDR = (page & 0xff);
+	nand_wait_ready();
+	NFADDR = ((page >> 8) & 0xff);
+	nand_wait_ready();
+	NFADDR = ((page >> 16) & 0xf);
+	nand_wait_ready();
 
-	nand_send_addr(0x0);
-
-	for (i = 0;i<100;i++); 
-
-	for (i=0;i<5;i++)	
-		*(buf+i) = NFDATA;
-
-	NAND_DISABLE_SELECT();	
 }
-
-
-
-int nand_boot_copy_to_ddr(unsigned int nand_start, unsigned int ddr_start, unsigned int len)
-{
-	/*
-	 *S3C6410启动时拷贝的8K代码不是存储在Nand flash的第一页上，
-	 *而是存储在Nand flash的前4页上，每页2K，总共8K，
-	 *这是S3C6410芯片的硬件结构决定的！所以启动代码要单独复制到DRAN中去
-	 */
-
-	unsigned char *buf = (unsigned char *)ddr_start;
-	int col ;//colunm
-	int i = 0;
-	len = len/2048+1; //page 
-	/* 1. 选中 */
-	NAND_ENABLE_SELECT();
-	
-	while (i < len)
-	{
-		/* 2. 发出读命令00h */
-		nand_send_cmd(0x00);
-
-		/* 3. 发出地址(分5步发出) */
-		nand_send_addr(nand_start);
-		/* 4. 发出读命令30h */
-		nand_send_cmd(0x30);
-
-		/* 5. 判断状态 */
-		nand_wait_ready();
-
-		/* 6. 读数据 */
-		for (col = 0; col < 2048; col++)
-		{
-			buf[col] =  NFDATA;	
-		}
-		buf = buf+2048;
-		nand_start = nand_start + PAGESIZE;
-		i++;//page ++	
-	}
-
-	/* 7. 取消选中 */		
-	NAND_DISABLE_SELECT();
-	return 0;
-}
-
-
-
-
-
-
+*/
 
 
 
