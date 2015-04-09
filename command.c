@@ -4,6 +4,7 @@
 #include"command.h"
 #include"main.h"
 #include"nand.h"
+#include"lcd.h"
 
 static struct command commands[COMMAND_NUM] =
 {
@@ -12,7 +13,7 @@ static struct command commands[COMMAND_NUM] =
 	{2,"mw"},
 	{3,"nand"},
 	{4,"bootm"},
-
+	{5,"lcd"},
 };
 
 void delay(volatile int i)
@@ -159,6 +160,15 @@ void run_command(int argc, char * argv[])
 			i = bootm(argc,argv);
 			break;
 		case 5:
+			if(argc!=2)
+			{
+				printf("command Parameter is Error\r\n");
+				printf("Try 'cp --help' for more information.\r\n");
+				break;
+			}
+			i = lcd(argc,argv);
+			break;
+		case 6:
 			read_command_line();
 		//default:
 			
@@ -174,6 +184,15 @@ void run_command(int argc, char * argv[])
 }
 
 
+int lcd(int argc, char * argv[])
+{
+	int color;
+	color = atoi(argv[1]); 
+	lcd_clear_screen(color);
+	lcd_draw_hline(240,0,800,0xfff000);
+	lcd_draw_vline(400,0,480,0x000000);
+	return 1;
+}
 
 int nand(int argc, char * argv[])
 {	
@@ -181,7 +200,7 @@ int nand(int argc, char * argv[])
 	int adress;
 	int page;
 
-	if(strcmp(argv[1], "read")==0 );
+	if(strcmp(argv[1], "read")==0 )
 	{
 		adress = atoi(argv[2]); //adress of read to sdram
 		offset = atoi(argv[3]); // nand adress	

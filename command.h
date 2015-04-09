@@ -5,7 +5,7 @@
 #define	CFG_PROMPT		"CXD_BOOT #"
 #define	MAX_CMDBUF_SIZE	256	/* Console I/O Buffer Size*/
 #define CFG_MAXARGS 6
-#define COMMAND_NUM 5
+#define COMMAND_NUM 6
 
 struct command 
 {
@@ -27,7 +27,7 @@ int mw(int argc, char * argv[]);
 int nand(int argc, char * argv[]);
 int bootm(int argc, char * argv[]);
 int help(int argc, char * argv[]);
-
+int lcd(int argc, char * argv[]);
 
 
 #endif

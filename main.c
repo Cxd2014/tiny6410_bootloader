@@ -4,8 +4,10 @@
 #include"stdio.h"
 #include"setup.h"
 #include"command.h"
+#include"lcd.h"
 
-
+#define WIDTHEIGHT	480
+#define HEIGHT	272
 
 static unsigned int strlen(const char * s)
 {
@@ -35,7 +37,9 @@ int main(void)
 	unsigned char Nand_ID[Nand_ID_DATD_SIZE]; //read the nand flash ID
 
 	init_uart();    //init the uart
+	lcd_init();    //init the lcd 
 
+	
 	printf("####CXD_Bootloader for MINI6410_1GNandflash####\r\n");
 
 	nand_read_id(Nand_ID);
@@ -43,10 +47,15 @@ int main(void)
 	for(c=0;c<Nand_ID_DATD_SIZE;c++)
 		printf("%x",Nand_ID[c]);
 	printf("\r\n");
+
+	nand_read_page(0x3f000000,0x5f000000,0x120000);//copy the logo to sdram 
+
+	lcd_draw_logo(0x5f000000);//show the logo
 	
 	gpkcon0 = 0x11110000;//turn on the led
 	gpkdat =  0x00;
 
+	
 	if(!abort_boot(bootdelay)) /* ÑÓÊ±Æô¶¯ */
 	{
 		boot_linux();
