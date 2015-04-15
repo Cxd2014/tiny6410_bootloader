@@ -6,8 +6,8 @@
 #include"command.h"
 #include"lcd.h"
 
-#define WIDTHEIGHT	480
-#define HEIGHT	272
+//#define WIDTHEIGHT	480
+//#define HEIGHT	272
 
 static unsigned int strlen(const char * s)
 {
@@ -91,6 +91,7 @@ void boot_linux(void)
 	cleanup_before_linux();
 
 	theKernel(0,2520,0x50000100);//go to linux kernel
+	//theKernel(0,1626,0x50000100);
 }
 
 void init_tag(int addr)

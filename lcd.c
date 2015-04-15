@@ -198,6 +198,7 @@ void lcd_draw_logo(int logo_adress)
 			green = *p++;
 			red = *p++;
 			color = red << 16 | green << 8 | blue << 0;
+			
 			lcd_draw_pixel(i, j, color);
 		}
 			

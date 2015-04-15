@@ -5,7 +5,7 @@
 #define gpkcon0  (*((volatile unsigned int *)0x7F008800))
 #define gpkdat  (*((volatile unsigned int *)0x7F008808))
 
-#define C1_DC		(1<<2)
+#define C1_DC	(1<<2)
 #define C1_IC		(1<<12)	
 
 #define Nand_ID_DATD_SIZE 5

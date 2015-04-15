@@ -21,6 +21,7 @@ int abort_boot(int bootdelay);
 int read_command_line();
 void run_command(int argc, char * argv[]);
 int atoi(char * buf);
+void warning_message(char num);
 
 int md(int argc, char * argv[]);
 int mw(int argc, char * argv[]);
