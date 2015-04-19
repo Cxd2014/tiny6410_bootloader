@@ -1,10 +1,9 @@
-#include"stdio.h"
-#include"lib/string.h"
-#include"uart.h"
-#include"command.h"
-#include"main.h"
-#include"nand.h"
-#include"lcd.h"
+#include"cxd/uart.h"
+#include"cxd/command.h"
+#include"cxd/main.h"
+#include"cxd/mynand.h"
+#include"cxd/lcd.h"
+
 
 static struct command commands[COMMAND_NUM] =
 {
@@ -48,7 +47,7 @@ int abort_boot(int bootdelay)
 
 		printf ("\b\b \b%d ", bootdelay);
 	}
-	printf ("\r\n");
+	printf ("\n");
 	return abort;
 }
 
@@ -59,7 +58,7 @@ static int getchar(void)
 	ichar = getc();
 	if ((ichar == '\n') || (ichar == '\r'))//deal with Enter and newline 
 	{
-		putc('\n');
+		CXD_putc('\n');
 		ichar = '\n';
 	}
 	return ichar;
@@ -72,18 +71,17 @@ static  void getcommand(char *s)
 	while ((*p =getchar()) != '\n') 
 	{
 		if (*p != '\b')
-			putc(*p++);
+			CXD_putc(*p++);
 		else if(p > s)//deal with Backspace
 			{
-				putc('\b');				
-				putc(' ');
-				putc('\b');
+				CXD_putc('\b');				
+				CXD_putc(' ');
+				CXD_putc('\b');
 				p--;
 			}	
 	}		
 	*p = '\0';	
-	putc('\r');
-	//putc('\n');
+	//CXD_putc('\n');
 }
 
 int read_command_line()
@@ -166,9 +164,9 @@ void run_command(int argc, char * argv[])
 	}
 
 	if(i==1)
-		printf("Do command %s successful!\r\n",argv[0]);
+		printf("Do command %s successful!\n",argv[0]);
 	else
-		printf("Do command %s fail!\r\n",argv[0]);
+		printf("Do command %s fail!\n",argv[0]);
 	
 	read_command_line();
 	
@@ -191,16 +189,27 @@ int nand(int argc, char * argv[])
 	int adress;
 	int page;
 	
+	//nand_info_t *nand;
+
 	if(strcmp(argv[1], "erase")==0)
 	{
+		//nand_erase_options_t opts;
+		
 		offset = atoi(argv[2]); // nand adress	
 		page = atoi(argv[3]) ;   // 1 block 
+		
 		if(offset % 0x20000 != 0)
 		{
-			printf("The offset adress must be an integer multiple of block\r\n");
+			printf("The offset adress must be an integer multiple of block\n");
 			return 0;
 		}
-		nand_erase_block(offset, page);
+	/*
+		opts.offset = offset;
+		opts.length = page;
+		opts.quiet  = 0;
+	*/
+		//nand_erase_opts(nand, &opts);
+		
 		return 1;
 	}
 	else
@@ -211,7 +220,7 @@ int nand(int argc, char * argv[])
 		
 		if(offset % 2048 != 0)
 		{
-			printf("The offset adress must be an integer multiple of page\r\n");
+			printf("The offset adress must be an integer multiple of page\n");
 			return 0;
 		}
 		
@@ -223,13 +232,13 @@ int nand(int argc, char * argv[])
 		
 		else if (strcmp(argv[1], "write")==0)
 		{
-			nand_write_page(offset,adress,page);
-			printf("nand write succeed !offset = %x\r\n",offset);
+			//nand_write_page(offset,adress,page);
+			printf("nand write succeed !offset = %x\n",offset);
 		}
 		
 		else
 		{
-			printf("No such command !\r\n");
+			printf("No such command !\n");
 			return 0;
 		}
 		return 1;
@@ -254,7 +263,7 @@ int md(int argc, char * argv[])
 			if(i>=size)
 				break;
 		}
-		printf("\r\n");
+		printf("\n");
 	}
 	
 	return 1;
@@ -286,13 +295,13 @@ int bootm(int argc, char * argv[])
 
 int help(int argc, char * argv[])
 {
-	printf("md            md [adress] [size] -- memory read\r\n");
-	printf("mw            md [adress] [size] [value]  --memory write\r\n");
-	printf("nand read     nand read [aderss] [offset] [page] --nand read to memory\r\n");
-	printf("nand write    nand write [aderss] [offset] [page] --nand write from memory\r\n");
-	printf("nand erase    nand erase [aderss] [block]  --nand erase block\r\n");
-	printf("bootm         boot for linux kernel\r\n");
-	printf("lcd           lcd [color] --clear the lcd\r\n");
+	printf("md            md [adress] [size] -- memory read\n");
+	printf("mw            mw [adress] [size] [value]  --memory write\n");
+	printf("nand read     nand read [aderss] [offset] [page] --nand read to memory\n");
+	printf("nand write    nand write [aderss] [offset] [page] --nand write from memory\n");
+	printf("nand erase    nand erase [aderss] [block]  --nand erase block\n");
+	printf("bootm         boot for linux kernel\n");
+	printf("lcd           lcd [color] --clear the lcd\n");
 	return 1;
 }
 
@@ -301,8 +310,8 @@ void warning_message(char num)
 	switch(num)
 	{
 		case 0:
-			printf("command Parameter is Error\r\n");
-			printf("Try 'cp --help' for more information.\r\n");
+			printf("command Parameter is Error\n");
+			printf("Try 'cp --help' for more information.\n");
 			break;	
 	}
 }
@@ -334,8 +343,6 @@ int atoi(char * buf)
 	}
 	return value;
 }
-
-
 
 
 

@@ -1,10 +1,12 @@
 #include"cxd/uart.h"
 #include"cxd/main.h"
+//#include"nand.h"
 #include"cxd/mynand.h"
 #include"cxd/setup.h"
 #include"cxd/command.h"
 #include"cxd/lcd.h"
 #include"cxd/uart.h"
+
 
 int main(void)
 {
@@ -14,13 +16,18 @@ int main(void)
 	
 	lcd_init();    //init the lcd 
 	
-	printf("####CXD_Bootloader for MINI6410_1GNandflash####\n");
+	
+	CXD_printf ("NAND:    ");
+	nand_init();
+	
+	
+	CXD_printf("####CXD_Bootloader for MINI6410_1GNandflash####\n");
 
 	nand_read_id(Nand_ID);
-	printf("The Nand flash ID is : ");
+	CXD_printf("The Nand flash ID is : ");
 	for(c=0;c<Nand_ID_DATD_SIZE;c++)
 		putchar_hex(Nand_ID[c]);
-	printf("\n");
+	CXD_printf("\n");
 
 	nand_read_page(0x3f000000,0x5f000000,0x120000);//copy the logo to sdram 
 
@@ -31,7 +38,7 @@ int main(void)
 		boot_linux();
 	}
 
-	printf("##### CXD_Bootloader command#####\n");
+	CXD_printf("##### CXD_Bootloader command#####\n");
 	
 	while(1)
 	{	
@@ -45,7 +52,7 @@ void boot_linux(void)
 {
 	void (*theKernel)(int zero, int arch, unsigned int params); 
 	
-	printf("copy linux from NandFlash 0x80000 to Sdram 0x50008000...\n");
+	CXD_printf("copy linux from NandFlash 0x80000 to Sdram 0x50008000...\n");
 	
 	nand_read_page(0x80000,0x50008000,0x400000);
 
@@ -53,7 +60,7 @@ void boot_linux(void)
 
 	theKernel = (void (*)(int,int,unsigned int))0x50008000;//set the linux kernel adress in sdram
 
-	printf("booting linux kernel...\n");
+	CXD_printf("booting linux kernel...\n");
 
 	cleanup_before_linux();
 
@@ -84,7 +91,8 @@ void init_tag(int addr)
 	p->hdr.tag = ATAG_CMDLINE;
 	p->hdr.size =  (strlen (cmd) + sizeof(struct tag_header) + 3) >>2;	
 	strcpy (p->u.cmdline.cmdline, cmd);
-	printf("cmd  = %s\n",p->u.cmdline.cmdline);
+	//CXD_printf("p->hdr.size  = %d\n",p->hdr.size);
+	CXD_printf("cmd  = %s\n",p->u.cmdline.cmdline);
 	p = tag_next(p);
 	
 	p->hdr.tag = ATAG_NONE;

@@ -12,7 +12,7 @@ CPPFLAGS   	:= -nostdinc -I$(INCLUDEDIR)                  #告诉编译器不要
                                                           
 export 	CC AR LD OBJCOPY OBJDUMP INCLUDEDIR CPPFLAGS     #导出变量，传递给子目录中的makefile
 
-objs := start.o lowlevel_init.o sdram.o mynand.o main.o command.o uart.o clock.o lcd.o
+objs := start.o lowlevel_init.o dram.o mynand.o main.o command.o uart.o clock.o lcd.o
 #		  drivers/nand/libnand.a cpu/libs3c64xx.a
 
 boot.bin: $(objs)

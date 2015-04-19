@@ -1,4 +1,4 @@
-#include "lcd.h"
+#include "cxd/lcd.h"
 
 #define GPECON  (*((volatile unsigned long *)0x7F008080))
 #define GPEDAT  (*((volatile unsigned long *)0x7F008084))

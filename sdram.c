@@ -46,6 +46,8 @@
 /* 根据6410手册P192页相关步骤和sdram手册来初始化dram控制器(dramc) */
 void sdram_init( void )
 {
+
+	
 	/* 1. 使dramc进入"config"状态 */
 	set_val(P1MEMCCMD, 0x4);
 

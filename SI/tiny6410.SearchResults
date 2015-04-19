@@ -1,0 +1,3 @@
+---- nand_erase_options Matches (2 in 2 files) ----
+Nand.h (include):struct nand_erase_options {
+Types.h (include):typedef struct nand_erase_options nand_erase_options_t;

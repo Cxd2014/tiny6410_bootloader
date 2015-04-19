@@ -2,14 +2,13 @@
 #define __MAIN_H
 
 
-#define gpkcon0  (*((volatile unsigned int *)0x7F008800))
-#define gpkdat  (*((volatile unsigned int *)0x7F008808))
+
 
 #define C1_DC	(1<<2)
 #define C1_IC		(1<<12)	
 
 #define Nand_ID_DATD_SIZE 5
-#define	BOOTDELAY	5	        /* 倒计时*/
+#define	BOOTDELAY	3	        /* 倒计时*/
 
 
 void init_tag(int addr);
