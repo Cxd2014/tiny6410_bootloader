@@ -11,7 +11,7 @@ int main(void)
 	
 	int c = 0;
 	unsigned char Nand_ID[Nand_ID_DATD_SIZE]; //read the nand flash ID
-	
+	//volatile unsigned int *p = (volatile unsigned int *)0x50000000;
 	lcd_init();    //init the lcd 
 	
 	printf("####CXD_Bootloader for MINI6410_1GNandflash####\n");

@@ -34,28 +34,27 @@
 
 
 /*S70 Data Manual's 14 page
-  *HSPW == HS pulse width                            1 ~ 40 
-  *HBPD == HS Blanking                                 46
-  *VFPD == HS Front Porch                             16~210~354
+  *HSPW == HS pulse width                            1 ~ 40         ==hsync_len	= 10
+  *HBPD == HS Blanking                                 46           ==left_margin	= 36
+  *HFPD == HS Front Porch                             16~210~354    ==right_margin	= 80
   *LINEVAL == Horizontal Display Area       800
   */
+  
 #define HSPW 			(10)
-#define HBPD			 	(45)
-#define HFPD 				(15)
+#define HBPD			 	(36)
+#define HFPD 				(80)
 #define HOZVAL			(799)
 
-
 /*S70 Data Manual's 14 page
-  *VSPW == VS pulse width                       1 ~ 20 
-  *VBPD == VS Blanking                            23
-  *VFPD == VS Front Porch                       7~22~147
+  *VSPW == VS pulse width                       1 ~ 20         ==vsync_len	= 8
+  *VBPD == VS Blanking                            23           ==upper_margin	= 15
+  *VFPD == VS Front Porch                       7~22~147       ==lower_margin	= 22
   *LINEVAL == Vertical Display Area     480
   */
-#define VSPW				(9)        
-#define VBPD 			(20)
-#define VFPD 				(6)
+#define VSPW				(8)        
+#define VBPD 			(15)
+#define VFPD 				(22)
 #define LINEVAL 			(479)
-
 
 
 // init LCD

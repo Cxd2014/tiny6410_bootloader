@@ -298,8 +298,8 @@ int help(int argc, char * argv[])
 	printf("md            md [adress] [size] -- memory read\n");
 	printf("mw            mw [adress] [size] [value]  --memory write\n");
 	printf("nand read     nand read [aderss] [offset] [page] --nand read to memory\n");
-	printf("nand write    nand write [aderss] [offset] [page] --nand write from memory\n");
-	printf("nand erase    nand erase [aderss] [block]  --nand erase block\n");
+	//printf("nand write    nand write [aderss] [offset] [page] --nand write from memory\n");
+	//printf("nand erase    nand erase [aderss] [block]  --nand erase block\n");
 	printf("bootm         boot for linux kernel\n");
 	printf("lcd           lcd [color] --clear the lcd\n");
 	return 1;
